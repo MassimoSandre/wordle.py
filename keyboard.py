@@ -44,8 +44,10 @@ class Keyboard:
             new_button = self.Button(b)
             self.button_lines[2].append(new_button)
 
-    def render(self,screen, font):
+    def render(self,screen, font1, font2):
         height = self.dim[1]*3 + 2*self.spacing
+
+        EN_BS_OFFSET = 20
 
         for l in range(len(self.button_lines)):
             base_y = self.center[1]-(height//2) +(l*self.dim[1]) + (l*self.spacing)
@@ -58,15 +60,32 @@ class Keyboard:
                     color = [50]*3
                 else:
                     color = [200-self.button_lines[l][i].hover_time*2]*3
-                pygame.draw.rect(screen, color, pygame.Rect((current_x,base_y),self.dim),0,5)
+                
+                
 
-                text_surface = font.render(self.button_lines[l][i].value, False, (70,70,70))
+                if l == 2 and i == 0:
+                    pygame.draw.rect(screen, color, pygame.Rect((current_x-EN_BS_OFFSET,base_y),(self.dim[0]+EN_BS_OFFSET, self.dim[1])),0,5)
+                elif l==2 and i == len(self.button_lines[l])-1:
+                    pygame.draw.rect(screen, color, pygame.Rect((current_x,base_y),(self.dim[0]+EN_BS_OFFSET, self.dim[1])),0,5)
+                else:
+                    pygame.draw.rect(screen, color, pygame.Rect((current_x,base_y),self.dim),0,5)
+                
+                if len(self.button_lines[l][i].value) > 1:
+                    text_surface = font2.render(self.button_lines[l][i].value, False, (70,70,70))
+                else:
+                    text_surface = font1.render(self.button_lines[l][i].value, False, (70,70,70))
+
 
                 r = text_surface.get_rect()
 
                 dx = (r.width)//2
                 dy = (r.height)//2
-                screen.blit(text_surface, (current_x+self.dim[0]//2-dx, base_y+self.dim[1]//2-dy))
+                if l == 2 and i == 0:
+                    screen.blit(text_surface, (current_x-EN_BS_OFFSET+(self.dim[0]+EN_BS_OFFSET)//2-dx, base_y+self.dim[1]//2-dy))
+                elif l==2 and i == len(self.button_lines[l])-1:
+                    screen.blit(text_surface, (current_x+(self.dim[0]+EN_BS_OFFSET)//2-dx, base_y+self.dim[1]//2-dy))
+                else:
+                    screen.blit(text_surface, (current_x+self.dim[0]//2-dx, base_y+self.dim[1]//2-dy))
                 
     def get_input(self, mouse_pos):
         height = self.dim[1]*3 + 2*self.spacing

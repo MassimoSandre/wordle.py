@@ -10,6 +10,9 @@ from guess_box import Guess_box
 # - stats and stats file
 # - animations for guesses
 
+# BUG
+# - second occurrence of the same letter ins't checked as guessed
+
 
 
 f = open("allowed-guesses.json",'r')
@@ -30,7 +33,8 @@ screen = pygame.display.set_mode(size)
 clock = pygame.time.Clock()
 
 pygame.font.init()
-kb_font = pygame.font.SysFont('arial', 10)
+kb_font = pygame.font.SysFont('arial', 30)
+alt_kb_font = pygame.font.SysFont('arial', 20)
 gb_font = pygame.font.SysFont('arial', 30)
 
 kb = None
@@ -61,7 +65,7 @@ while running:
         print(correct_answer)
 
     
-    kb.render(screen, kb_font)
+    kb.render(screen, kb_font, alt_kb_font)
     gb.render(screen, gb_font)
 
     kb.hover(pygame.mouse.get_pos())
